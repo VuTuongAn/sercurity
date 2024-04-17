@@ -2,10 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
-import dto.response.ApiResponse;
-import dto.request.UserCreationRequest;
-import dto.request.UserUpdateRequest;
-import dto.response.UserResponse;
+import com.example.demo.dto.response.ApiResponse;
+import com.example.demo.dto.request.UserCreationRequest;
+import com.example.demo.dto.request.UserUpdateRequest;
+import com.example.demo.dto.response.UserResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;

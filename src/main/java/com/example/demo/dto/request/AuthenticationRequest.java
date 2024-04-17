@@ -1,4 +1,4 @@
-package dto.response;
+package com.example.demo.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,10 +8,9 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@AllArgsConstructor@Builder
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE)
-public class AuthenticationResponse {
-    String token;
-    boolean authenticated;
+public class AuthenticationRequest {
+    String username;
+    String password;
 }

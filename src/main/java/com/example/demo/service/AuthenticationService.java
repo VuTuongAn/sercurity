@@ -1,13 +1,17 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.request.IntrospectRequest;
+import com.example.demo.dto.response.IntrospectResponse;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import dto.request.AuthenticationRequest;
-import dto.response.AuthenticationResponse;
+import com.example.demo.dto.request.AuthenticationRequest;
+import com.example.demo.dto.response.AuthenticationResponse;
+import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -17,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -29,12 +34,27 @@ public class AuthenticationService {
 
      // @NonFinal: giúp biến này không inject vào constructor
      @NonFinal
-     protected static final String SIGNING_KEY = "Nt2tXsDSMZlT6jhT5tl69Gb6A10mNeKeRKe/0KgLqZjuYPftws+UKObMU3ReZbH3";
+     @Value("${jwt.secretKey}")
+     protected String SIGNING_KEY;
 //    @Value("${jwt.expiration}")
 //    Long expiration; // Lưu vào biến môi trường
 
-//    @Value("${jwt.secretKey}")
-//    String secretKey;
+
+    // Xác thực đây có phải token do web server tạo ra không
+    // Nếu không có chữ ký thì không thể xác thực được
+    public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
+        var token = request.getToken();
+        JWSVerifier verifier = new MACVerifier(SIGNING_KEY.getBytes());
+        SignedJWT signedJWT = SignedJWT.parse(token);
+        // Lấy ra thời gian hết hạn của token
+        Date expirationTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+
+        var verified = signedJWT.verify(verifier);
+        // Kiểm tra xe token đã hết hạn chưa
+        var verifiedToken = verified && expirationTime.after(new Date());
+        return IntrospectResponse.builder().valid(verifiedToken).build();
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         var user = userRepository.findByUsername(request.getUsername()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
