@@ -1,18 +1,20 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
 spring:
-  server:
-    port: 8080
-    servlet:
-      context-path: /api
   datasource:
-    url: jdbc:mysql://localhost:3306/Demo
+    url: "jdbc:mysql://localhost:3306/Demo"
     username: root
     password: root
-
   jpa:
     hibernate:
-    ddl-auto: update
-    show-sql: true
-  jwt:
-    expiration: 2592000 # 30 days = 30 * 24 * 60 *60
-#    Chữ ký bí mật
-    secretKey: "Nt2tXsDSMZlT6jhT5tl69Gb6A10mNeKeRKe/0KgLqZjuYPftws+UKObMU3ReZbH3"
+      ddl-auto: update
+      show-sql: true
+
+jwt:
+  signerKey: "Nt2tXsDSMZlT6jhT5tl69Gb6A10mNeKeRKe/0KgLqZjuYPftws+UKObMU3ReZbH3"
+
+
+

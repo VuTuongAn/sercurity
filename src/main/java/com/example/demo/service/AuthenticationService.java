@@ -34,7 +34,8 @@ public class AuthenticationService {
 
      // @NonFinal: giúp biến này không inject vào constructor
      @NonFinal
-     @Value("${jwt.secretKey}")
+
+     @Value("${jwt.signerKey}")
      protected String SIGNING_KEY;
 //    @Value("${jwt.expiration}")
 //    Long expiration; // Lưu vào biến môi trường
