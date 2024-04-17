@@ -12,6 +12,7 @@ public enum ErrorCode {
     PASSWORD_INVALID(1002, "Password must be at least 5 characters long"),
     INVALID_KEY(1003, "Invalid key"),
     USER_NOT_EXISTED(1004, "User not existed"),
+    UNTHENTICATED(1005, "Unauthenticated"),
     ;
     private int code;
     private String message;
