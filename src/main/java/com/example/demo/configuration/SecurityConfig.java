@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,6 +22,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+// Phân quyền trên method
+@EnableMethodSecurity
 public class SecurityConfig {
     private final String[] PUBLIC_ENDPOINTS = {
             "/auth/login",
@@ -33,9 +36,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/**")
+//                        .requestMatchers(HttpMethod.GET, "/users/**")
 //                        .hasAuthority("ROLE_ADMIN") hoặc
-                        .hasAnyRole(Role.ADMIN.name())
+//                        .hasAnyRole(Role.ADMIN.name())
                         .anyRequest().authenticated());
 
 //        http.oauth2ResourceServer(): Cấu hình Spring Security để hoạt động như một OAuth 2.0 Resource Server. Resource Server là server chứa các tài nguyên mà client muốn truy cập, và nó sẽ xác thực request từ client bằng cách kiểm tra access token.

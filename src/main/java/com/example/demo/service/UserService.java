@@ -11,6 +11,7 @@ import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.dto.response.UserResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,14 @@ public class UserService {
     public List<UserResponse> getAllUsers(){
         return userRepository.findAll().stream()
                 .map(userMapper::toResponse).toList();
+    }
+
+    public UserResponse getMyInfo() {
+        // Sau khi đăng nhập xác nhận thành công thì sẽ lưu vào contexthoder và lấy ra qua getContext
+        var context = SecurityContextHolder.getContext();
+        String name = context.getAuthentication().getName();
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        return userMapper.toResponse(user);
     }
 
     public void deleteUser(String userId){

@@ -10,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,7 @@ public class UserController {
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     ApiResponse<List<UserResponse>> getAllUsers(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,7 +39,8 @@ public class UserController {
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
         return ApiResponse.<List<UserResponse>>builder().result(userService.getAllUsers()).build();
     }
-
+    // Kiểm tra nếu đúng là user đăng nhập thì mới truy cập được id của user đó
+    @PostAuthorize("returnObject.id == authentication.name")
     @GetMapping("/{userId}")
     UserResponse getUser(@PathVariable("userId") String userId){
         return userService.getUser(userId);
@@ -51,6 +55,11 @@ public class UserController {
     String deleteUser(@PathVariable("userId") String userId){
         userService.deleteUser(userId);
         return "User deleted successfully";
+    }
+
+    @GetMapping("/my-info")
+    ApiResponse<UserResponse> getMyInfo(){
+        return ApiResponse.<UserResponse>builder().result(userService.getMyInfo()).build();
     }
 
 }
