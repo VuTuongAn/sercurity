@@ -5,6 +5,7 @@ import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
+import com.example.demo.repository.RoleRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
@@ -25,10 +26,9 @@ import java.util.List;
 @FieldDefaults(level = lombok.AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
      UserRepository userRepository;
-
      UserMapper userMapper;
-
      PasswordEncoder passwordEncoder;
+     RoleRepository roleRepository;
     public UserResponse createUser(UserCreationRequest request){
         if (userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED);
@@ -62,7 +62,10 @@ public class UserService {
         userRepository.deleteById(userId);
     }
     public UserResponse updateUser(String userId, UserUpdateRequest request){
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        var role = roleRepository.findAllById(request.getRoles());
+        user.setRoles(new HashSet<>(role));
         userMapper.updateUser(user, request);
         return userMapper.toResponse(userRepository.save(user));
     }
@@ -70,5 +73,7 @@ public class UserService {
     public UserResponse getUser(String userId){
        return userMapper.toResponse( userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found")));
     }
+
+
 
 }

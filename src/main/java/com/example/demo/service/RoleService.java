@@ -20,7 +20,7 @@ public class RoleService {
     PermissionRepository permissionRepository;
     RoleMapper roleMapper;
 
-    public RoleResponse  createRole(RoleRequest request) {
+    public RoleResponse createRole(RoleRequest request) {
         var role = roleMapper.toEntity(request);
         var permissions = permissionRepository.findAllById(request.getPermissions());
         role.setPermissions(new HashSet<>(permissions));

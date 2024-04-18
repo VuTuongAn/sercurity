@@ -5,6 +5,7 @@ import com.example.demo.dto.request.UserCreationRequest;
 import com.example.demo.dto.request.UserUpdateRequest;
 import com.example.demo.dto.response.UserResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
@@ -17,6 +18,7 @@ public interface UserMapper {
     // @Mapping(target = "lastName", ignore = true)
     UserResponse toResponse(User user);
 //    @MappingTarget sử dụng chỉ định một tham số đích trong một phương thức ánh xạ thường xuất hiện trong các phương thức cập nhật.
+    @Mapping(target = "roles", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
 }

@@ -94,8 +94,12 @@ public class AuthenticationService {
     // Hàm này sử dụng để nối chuỗi các scope lại với nhau bằng khoảng trắng
     private String buildScope(User user){
         StringJoiner joiner = new StringJoiner(" ");
-//        if (!CollectionUtils.isEmpty(user.getRoles()))
-//            user.getRoles().forEach(joiner::add);
+        if (!CollectionUtils.isEmpty(user.getRoles()))
+            user.getRoles().forEach(role -> {
+                joiner.add("ROLE_" + role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions()))
+                    role.getPermissions().forEach(permission -> joiner.add(permission.getName()));
+            });
         return joiner.toString();
     }
 }

@@ -31,7 +31,10 @@ public class UserController {
         apiResponse.setResult(userService.createUser(request));
         return apiResponse;
     }
-    @PreAuthorize("hasRole('ADMIN')")
+    // hasRole mặc định spring sẽ tìm những prefix là ROLE_ để phân quyền
+//    @PreAuthorize("hasRole('ADMIN')")
+    // Có thể sử dụng role CREATE_DATA hoặc ADMIN vì nó đang được lưu trong token tại claim scope
+    @PreAuthorize("hasAuthority('CREATE_DATA')")
     @GetMapping
     ApiResponse<List<UserResponse>> getAllUsers(){
         var authentication = SecurityContextHolder.getContext().getAuthentication();
