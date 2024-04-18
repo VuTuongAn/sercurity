@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.User;
+import com.example.demo.enums.Role;
 import com.example.demo.exception.AppException;
 import com.example.demo.exception.ErrorCode;
 import com.example.demo.mapper.UserMapper;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -24,21 +26,27 @@ public class UserService {
      UserRepository userRepository;
 
      UserMapper userMapper;
+
+     PasswordEncoder passwordEncoder;
     public User createUser(UserCreationRequest request){
         if (userRepository.existsByUsername(request.getUsername())){
             throw new AppException(ErrorCode.USER_EXISTED);
             // Nếu mà trả về 9999 là lỗi mình chưa bắt
-//            throw new RuntimeException("Không bắt được lỗi");
+//             throw new RuntimeException("Không bắt được lỗi");
         }
         User user = userMapper.toEntity(request);
         // Strength: 10 càng lớn thì càng an toàn nhưng càng chậm
-        PasswordEncoder encoder = new BCryptPasswordEncoder(10);
-        user.setPassword(encoder.encode(request.getPassword()));
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        user.setRoles(roles);
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<UserResponse> getAllUsers(){
+        return userRepository.findAll().stream()
+                .map(userMapper::toResponse).toList();
     }
 
     public void deleteUser(String userId){

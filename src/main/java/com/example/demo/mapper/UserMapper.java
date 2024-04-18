@@ -16,6 +16,7 @@ public interface UserMapper {
     // Trong trường hợp mà bỏ qua không map thì ta sẽ sử dụng ignore = true
     // @Mapping(target = "lastName", ignore = true)
     UserResponse toResponse(User user);
+//    @MappingTarget sử dụng chỉ định một tham số đích trong một phương thức ánh xạ thường xuất hiện trong các phương thức cập nhật.
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 
 }

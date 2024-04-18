@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -25,4 +26,6 @@ public class User {
     String firstName;
     String lastName;
     LocalDate dateOfBirth;
+    // Đảm bảo các role không trùng lặp chỉ có 1 unique role
+    Set<String> roles;
 }
