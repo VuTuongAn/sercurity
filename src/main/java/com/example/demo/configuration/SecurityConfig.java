@@ -47,10 +47,12 @@ public class SecurityConfig {
 //                Vì vậy, đoạn mã này cấu hình Spring Security để xác thực các request đến Resource Server bằng cách sử dụng JWT, và giải mã JWT bằng JwtDecoder đã được cấu hình.
 
 
-
-
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                .jwtAuthenticationConverter(jwtAuthenticationConverter())));
+                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                // Khi token không hợp lệ thì trả về 401 nhưng k bắt được ở pakage exception và dùng cái này phải tạo một class
+                // Implement AuthenticationEntryPoint
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+        );
         http.csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
