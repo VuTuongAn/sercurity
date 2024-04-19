@@ -20,7 +20,7 @@ public class DobValidator implements ConstraintValidator<DobConstraint, LocalDat
         return years >= min;
     }
 
-    // Khởi tạo các giá trị được config
+    // Khởi tạo các giá trị được config rồi tra len cho ham tren
     @Override
     public void initialize(DobConstraint constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
