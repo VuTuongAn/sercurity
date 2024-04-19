@@ -24,7 +24,8 @@ public class SecurityConfig {
             "/auth/login",
             "/users",
             "/auth/introspect",
-            "/auth/logout"
+            "/auth/logout",
+            "/auth/refresh"
     };
     @Value("${jwt.signerKey}")
     private String signerKey;
